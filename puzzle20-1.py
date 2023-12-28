@@ -1,7 +1,6 @@
 import sys
 
 mods = {}
-ff = []
 for line in sys.stdin:
     mod, outs = line.rstrip().split(' -> ')
     outs = outs.split(', ')
@@ -11,8 +10,6 @@ for line in sys.stdin:
         t, name = mod[0], mod[1:]
         assert t in ('%', '&')
     mods[name] = [t, outs, 0, {}]
-    if t == '%':
-        ff.append(name)
 
 sink = None
 for name, mod in mods.items():
@@ -28,11 +25,12 @@ if sink:
     mods[sink] = ['', [], 0, {}]
 # print(mods)
 
-cycle = []
 n = 0
+low = 0
+high = 0
 while True:
-    low = 0
-    high = 0
+    n += 1
+    print(n)
     q = [('button', 'broadcaster', 0)]
     while q:
         p = q.pop(0)
@@ -62,23 +60,6 @@ while True:
             for o in outs:
                 q.append((cur, o, val))
         # print(q)
-    cycle.append((low, high))
-    n += 1
-    print(n)
     if n == 1000:
         break
-    if sum(mods[f][2] for f in ff) == 0:
-        break
-# print('cycle', cycle)
-print('cycle len', len(cycle))
-clow = sum(l[0] for l in cycle)
-chigh = sum(l[1] for l in cycle)
-print('cycle low', clow, 'high', chigh)
-
-full = 1000 // len(cycle)
-low = clow * full
-high = chigh * full
-for i in range(0, 1000 % len(cycle)):
-    low += cycle[i][0]
-    high += cycle[i][1]
 print(low * high)
