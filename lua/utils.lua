@@ -26,10 +26,13 @@ function dump(o)
 
 		table.insert(t, "}")
 		return table.concat(t)
+	elseif type(o) == "nil" then
+		return "nil"
 	else
 		error("not implemented")
 	end
 end
+
 --[[
 local tests = {
 	5,
@@ -49,6 +52,7 @@ end
 --]]
 
 function string.split(s, sep)
+	sep = sep or "%s+"
 	if sep == "" then error("empty separator") end
 	local res = {}
 	local i = 1
@@ -61,6 +65,7 @@ function string.split(s, sep)
 	table.insert(res, string.sub(s, i))
 	return res
 end
+
 --[[
 local tests = {
 	{"", " "},
@@ -68,18 +73,20 @@ local tests = {
 	{":abc", ":"},
 	{"abc:", ":"},
 	{":abc:def:ghi:", ":"},
+	{"abc def \n\tghi"},
 }
 for _, v in ipairs(tests) do
 	local s, sep = unpack(v)
-	print(dump(v), dump(string.split(s, sep)))
+	print(dump(v), dump(string.split(s, unpack({sep}))))
 end
 --]]
 
 function string.lstrip(s, chars)
 	chars = chars or "%s"
 	if chars == "" then return s end
-	return string.gsub(s, "^[" .. chars .. "]+", "")
+	return (string.gsub(s, "^[" .. chars .. "]+", ""))
 end
+
 --[[
 local tests = {
 	{"abc", ""},
@@ -95,8 +102,9 @@ end
 function string.rstrip(s, chars)
 	chars = chars or "%s"
 	if chars == "" then return s end
-	return string.gsub(s, "[" .. chars .. "]+$", "")
+	return (string.gsub(s, "[" .. chars .. "]+$", ""))
 end
+
 --[[
 local tests = {
 	{"abc", ""},
@@ -114,6 +122,7 @@ function string.strip(s, chars)
 	if chars == "" then return s end
 	return string.rstrip(string.lstrip(s, chars), chars)
 end
+
 --[[
 local tests = {
 	{"abc", ""},
