@@ -134,3 +134,49 @@ for _, v in ipairs(tests) do
 	print(dump(v), dump(string.strip(s, unpack({chars}))))
 end
 --]]
+
+function prime_factors(n)
+	assert(n > 0)
+	local facts = {}
+	while true do
+		local fact = n
+		if n % 2 == 0 then fact = 2
+		else
+			for f = 3, math.floor(math.sqrt(n)), 2 do
+				if n % f == 0 then
+					fact = f
+					break
+				end
+			end
+		end
+
+		local cnt = facts[fact]
+		if cnt then
+			facts[fact] = cnt + 1
+		else
+			facts[fact] = 1
+		end
+		if fact == n then break end
+		n = n / fact
+	end
+	return facts
+end
+
+function lcm(nums)
+	local common = prime_factors(nums[1])
+	for i = 2, #nums do
+		local factors = prime_factors(nums[i])
+		for fact, cnt in pairs(factors) do
+			local cur = common[fact]
+			if not cur or cur < cnt then
+				common[fact] = cnt
+			end
+		end
+	end
+
+	local prod = 1
+	for fact, cnt in pairs(common) do
+		for i = 1, cnt do prod = prod * fact end
+	end
+	return prod
+end
