@@ -90,48 +90,30 @@ for y in range(h):
 dump_grid('input10-clean')
 
 # insert spaces for vertical corridors between pipes into the grid
-VERTPAIRS = [(l, r) for l in ['|', 'J', '7'] for r in ['|', 'L', 'F']]
-print('vert pairs', VERTPAIRS)
-x = 0
-while x < w - 1:
-    n = 0
-    for y in range(h):
-        c1, c2 = grid[y][x], grid[y][x + 1]
-        if (c1, c2) in VERTPAIRS: # we have corridor
-            n += 1
-            break
-    if n > 0:
-        for y in range(h):
-            c1 = grid[y][x]
-            c2 = ' '
-            if c1 in ('-', 'L', 'F'): # don't break connections
-                c2 = '-'
-            grid[y].insert(x + 1, c2)
-        x += 1
-        w += 1
-    x += 1
+newgrid = []
+for row in grid:
+    newrow = []
+    for x in range(w - 1):
+        c1 = row[x]
+        c2 = '-' if c1 in ('-', 'L', 'F') else ' ' # don't break connections
+        newrow.extend((c1, c2))
+    newrow.append(row[w - 1])
+    newgrid.append(newrow)
+grid = newgrid
+w = len(grid[0])
 
 # insert spaces for horizontal corridors between pipes into the grid
-HORIZPAIRS = [(t, b) for t in ['-', 'L', 'J'] for b in ['-', '7', 'F']]
-print('horiz pairs', HORIZPAIRS)
-y = 0
-while y < h - 1:
-    n = 0
-    for x in range(w):
-        c1, c2 = grid[y][x], grid[y + 1][x]
-        if (c1, c2) in HORIZPAIRS: # we have corridor
-            n += 1
-            break
-    if n > 0:
-        row = [' '] * w
-        grid.insert(y + 1, row)
-        for x in range(w):
-            c = grid[y][x]
-            if c in ('|', '7', 'F'): # don't break connections
-                row[x] = '|'
-        y += 1
-        h += 1
-    y += 1
+newgrid = []
+for y in range(h - 1):
+    row = grid[y]
+    newrow = [' '] * w
+    for x, c in enumerate(row):
+        if c in ('|', '7', 'F'): # don't break connections
+            newrow[x] = '|'
+    newgrid.extend((row, newrow))
+newgrid.append(grid[h - 1])
+grid = newgrid
+h = len(grid)
 
 print(f'w {w} h {h}')
 dump_grid('input10-corridors')
