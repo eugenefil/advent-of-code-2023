@@ -122,53 +122,40 @@ for _, row in ipairs(grid) do
 end
 f:close()
 
-local lrconn = {}
-for _, left in ipairs({"-", "L", "F"}) do
-	for _, right in ipairs({"-", "J", "7"}) do
-		lrconn[left .. right] = 1
-	end
-end
-print("left-right connections", dump(lrconn))
-
 -- insert vertical corridors after every column except last
-local widegrid = {}
-for y, row in ipairs(grid) do
-	local widerow = {}
+local xconn = {["-"]=1, ["L"]=1, ["F"]=1}
+local newgrid = {}
+for _, row in ipairs(grid) do
+	local newrow = {}
 	for x = 1, w - 1 do
-		table.insert(widerow, row[x])
-		local pair = row[x] .. row[x + 1]
-		local conn = lrconn[pair] and "-" or " "
-		table.insert(widerow, conn)
+		local t1 = row[x]
+		table.insert(newrow, t1)
+		local t2 = xconn[t1] and "-" or " " -- don't break connections
+		table.insert(newrow, t2)
 	end
-	table.insert(widerow, row[w])
-	table.insert(widegrid, widerow)
+	table.insert(newrow, row[w])
+	table.insert(newgrid, newrow)
 end
 w = 2 * w - 1
-grid = widegrid
-
-local tbconn = {}
-for _, top in ipairs({"|", "7", "F"}) do
-	for _, bot in ipairs({"|", "L", "J"}) do
-		tbconn[top .. bot] = 1
-	end
-end
-print("top-bottom connections", dump(tbconn))
+grid = newgrid
 
 -- insert horizontal corridors after every row except last
-local tallgrid = {}
+local yconn = {["|"]=1, ["7"]=1, ["F"]=1}
+local newgrid = {}
 for y = 1, h - 1 do
-	table.insert(tallgrid, grid[y])
+	local row = grid[y]
 	local newrow = {}
 	for x = 1, w do
-		local pair = grid[y][x] .. grid[y + 1][x]
-		local conn = tbconn[pair] and "|" or " "
-		table.insert(newrow, conn)
+		local t1 = row[x]
+		local t2 = yconn[t1] and "|" or " "
+		table.insert(newrow, t2)
 	end
-	table.insert(tallgrid, newrow)
+	table.insert(newgrid, row)
+	table.insert(newgrid, newrow)
 end
-table.insert(tallgrid, grid[h])
+table.insert(newgrid, grid[h])
 h = 2 * h - 1
-grid = tallgrid
+grid = newgrid
 
 local f = io.open("input10-corridors", "w")
 for _, row in ipairs(grid) do
