@@ -1,13 +1,12 @@
 #include <iostream>
 #include <string>
 #include <cassert>
-#include <map>
 
 int main()
 {
-    std::map<std::string, char> digits = {
-        {"zero", '0'}, {"one", '1'}, {"two", '2'}, {"three", '3'}, {"four", '4'},
-        {"five", '5'}, {"six", '6'}, {"seven", '7'}, {"eight", '8'}, {"nine", '9'}
+    const char* digits[10][2] = {
+        {"zero", "0"}, {"one", "1"}, {"two", "2"}, {"three", "3"}, {"four", "4"},
+        {"five", "5"}, {"six", "6"}, {"seven", "7"}, {"eight", "8"}, {"nine", "9"}
     };
     unsigned long sum = 0;
     for (std::string line; std::getline(std::cin, line);) {
@@ -15,10 +14,10 @@ int main()
         auto first = line.find_first_of("0123456789");
         if (first != std::string::npos)
             ch1 = line[first];
-        for (const auto& [digit, ch] : digits) {
+        for (auto [digit, ch] : digits) {
             if (auto pos = line.find(digit); pos < first) {
                 first = pos;
-                ch1 = ch;
+                ch1 = ch[0];
             }
         }
         assert(ch1);
@@ -27,11 +26,11 @@ int main()
         auto last = line.find_last_of("0123456789");
         if (last != std::string::npos)
             ch2 = line[last];
-        for (const auto& [digit, ch] : digits) {
+        for (auto [digit, ch] : digits) {
             auto pos = line.rfind(digit);
             if (pos != std::string::npos && (pos > last || ch2 == 0)) {
                 last = pos;
-                ch2 = ch;
+                ch2 = ch[0];
             }
         }
         assert(ch2);
