@@ -17,9 +17,9 @@ int main()
         s.remove_prefix(5);
 
         unsigned long id = 0;
-        auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), id);
-        assert(ec == std::errc{} && id);
-        s.remove_prefix(ptr - s.data());
+        auto res = std::from_chars(s.data(), s.data() + s.size(), id);
+        assert(res.ec == std::errc{} && id);
+        s.remove_prefix(res.ptr - s.data());
 
         assert(s.starts_with(':'));
         s.remove_prefix(1);
@@ -30,9 +30,9 @@ int main()
             s.remove_prefix(1);
 
             unsigned long num = 0;
-            auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), num);
-            assert(ec == std::errc{} && num);
-            s.remove_prefix(ptr - s.data());
+            res = std::from_chars(s.data(), s.data() + s.size(), num);
+            assert(res.ec == std::errc{} && num);
+            s.remove_prefix(res.ptr - s.data());
 
             assert(s.starts_with(' '));
             s.remove_prefix(1);
