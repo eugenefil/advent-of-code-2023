@@ -11,9 +11,7 @@ fn main() {
             .split_ascii_whitespace()
             .filter_map(|n| winning.get(&n))
             .sum();
-        if wins > 0 {
-            sum += 2u32.pow(wins - 1);
-        }
+        sum += 2u32.pow(wins) >> 1;
     }
     println!("{sum}");
 }
