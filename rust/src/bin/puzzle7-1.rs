@@ -1,11 +1,12 @@
-#[derive(PartialEq, Eq, Hash, Debug)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 struct Card {
+    strength: u8,
     label: char,
 }
 
 impl Card {
-    fn strength(&self) -> u8 {
-        match self.label {
+    fn from_label(label: char) -> Self {
+        let strength = match label {
             '2' => 2,
             '3' => 3,
             '4' => 4,
@@ -20,21 +21,8 @@ impl Card {
             'K' => 13,
             'A' => 14,
             _ => panic!(),
-        }
-    }
-}
-
-use std::cmp::Ordering;
-
-impl Ord for Card {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.strength().cmp(&other.strength())
-    }
-}
-
-impl PartialOrd for Card {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
+        };
+        Card { strength, label }
     }
 }
 
@@ -85,7 +73,7 @@ impl From<&str> for Hand {
     fn from(cards: &str) -> Self {
         let cards: [Card; 5] = cards
             .chars()
-            .map(|label| Card { label })
+            .map(|label| Card::from_label(label))
             .collect::<Vec<Card>>()
             .try_into()
             .unwrap();
