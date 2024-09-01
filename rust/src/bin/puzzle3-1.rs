@@ -8,6 +8,7 @@ struct Number {
 }
 
 struct Symbol {
+    #[allow(dead_code)]
     ch: u8,
     pos: usize,
 }
@@ -20,10 +21,7 @@ struct SchematicLine {
 impl SchematicLine {
     fn sum(&self, prev: Option<&Self>, next: Option<&Self>) -> u32 {
         let mut sum: u32 = 0;
-        let lines: Vec<&SchematicLine> = [prev, Some(self), next]
-            .into_iter()
-            .filter_map(|x| x)
-            .collect();
+        let lines: Vec<&SchematicLine> = [prev, Some(self), next].into_iter().flatten().collect();
         'number: for num in &self.numbers {
             for line in &lines {
                 for sym in &line.symbols {

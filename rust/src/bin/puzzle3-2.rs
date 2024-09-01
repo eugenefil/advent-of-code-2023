@@ -20,10 +20,7 @@ struct SchematicLine {
 impl SchematicLine {
     fn sum(&self, prev: Option<&Self>, next: Option<&Self>) -> u32 {
         let mut sum: u32 = 0;
-        let lines: Vec<&SchematicLine> = [prev, Some(self), next]
-            .into_iter()
-            .filter_map(|x| x)
-            .collect();
+        let lines: Vec<&SchematicLine> = [prev, Some(self), next].into_iter().flatten().collect();
         'symbol: for sym in &self.symbols {
             if sym.ch != b'*' {
                 continue;

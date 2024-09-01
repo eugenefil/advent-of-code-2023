@@ -33,7 +33,7 @@ fn main() {
         assert!(line.ends_with("map:"));
         let mut ranges = Vec::new();
         for line in std::io::stdin().lines().map(|s| s.unwrap()) {
-            if line.len() == 0 {
+            if line.is_empty() {
                 break;
             }
             let [dst, src, len] = parse_numbers(&line).try_into().unwrap();

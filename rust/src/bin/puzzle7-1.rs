@@ -5,7 +5,7 @@ struct Card {
 }
 
 impl Card {
-    fn from_label(label: char) -> Self {
+    fn new(label: char) -> Self {
         let strength = match label {
             '2' => 2,
             '3' => 3,
@@ -49,7 +49,7 @@ impl Hand {
         cards
             .iter()
             .for_each(|c| *counts.entry(c).or_insert(0u32) += 1);
-        let groups = counts.values().map(|&c| c).collect::<Vec<u32>>();
+        let groups: Vec<_> = counts.values().copied().collect();
         match groups.len() {
             1 => HandType::FiveOfAKind,
             2 => match groups[0] {
@@ -73,7 +73,7 @@ impl From<&str> for Hand {
     fn from(cards: &str) -> Self {
         let cards: [Card; 5] = cards
             .chars()
-            .map(|label| Card::from_label(label))
+            .map(Card::new)
             .collect::<Vec<Card>>()
             .try_into()
             .unwrap();

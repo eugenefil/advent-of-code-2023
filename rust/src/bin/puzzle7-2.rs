@@ -5,7 +5,7 @@ struct Card {
 }
 
 impl Card {
-    fn from_label(label: char) -> Self {
+    fn new(label: char) -> Self {
         let strength = match label {
             'J' => 1,
             '2' => 2,
@@ -49,10 +49,10 @@ impl Hand {
         cards
             .iter()
             .for_each(|c| *counts.entry(c).or_insert(0u32) += 1);
-        let jokers = counts.remove(&Card::from_label('J'));
-        let mut groups = counts.values().map(|&c| c).collect::<Vec<u32>>();
+        let jokers = counts.remove(&Card::new('J'));
+        let mut groups: Vec<_> = counts.values().copied().collect();
         if let Some(jokers) = jokers {
-            if groups.len() == 0 {
+            if groups.is_empty() {
                 groups.push(5); // hand of all jokers
             } else {
                 groups.sort();
@@ -82,7 +82,7 @@ impl From<&str> for Hand {
     fn from(cards: &str) -> Self {
         let cards: [Card; 5] = cards
             .chars()
-            .map(|label| Card::from_label(label))
+            .map(Card::new)
             .collect::<Vec<Card>>()
             .try_into()
             .unwrap();
