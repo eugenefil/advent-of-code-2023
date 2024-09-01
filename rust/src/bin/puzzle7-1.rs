@@ -98,10 +98,11 @@ fn main() {
         });
     }
     bids.sort();
-    println!("{}", bids
-        .into_iter()
-        .enumerate()
-        .map(|(rank, bid)| (rank + 1) * bid.amount)
-        .sum::<usize>()
+    println!(
+        "{}",
+        bids.into_iter()
+            .enumerate()
+            .map(|(rank, bid)| (rank + 1) * bid.amount)
+            .sum::<usize>()
     );
 }
